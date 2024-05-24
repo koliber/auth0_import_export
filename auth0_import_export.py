@@ -125,7 +125,7 @@ def create_auth0_import(users_file_path: str, hashes_file_path: str):
 
     users_with_missing_passwords: list[str] = []
 
-    output: dict[str, dict[str, str]] = {}
+    output: list[dict[str, str]] = []
     for email, user_info in user_info_by_email.items():
         # The output file needs a lower-cased "email"
         user_info['email'] = user_info.pop('Email')
@@ -138,16 +138,16 @@ def create_auth0_import(users_file_path: str, hashes_file_path: str):
                 # Password has is missing, but should have been there
                 # Add the user without the password hash.
                 users_with_missing_passwords.append(email)
-                output[email] = user_info
+                output.append(user_info)
                 continue
 
             user_info['passwordHash'] = password_hash_info['passwordHash']
-            output[email] = user_info
+            output.append(user_info)
         else:
             # This user is authenticated using a non-local store. No password hash expected
-            output[email] = user_info
+            output.append(user_info)
 
-    json_output = json.dumps(output, indent=4)
+    json_output = json.dumps(output, indent=2)
     print(json_output)
 
     if users_with_missing_passwords:
