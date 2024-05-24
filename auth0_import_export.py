@@ -57,7 +57,7 @@ def get_hash_lines(hashes_file_path: str) -> list[str]:
             # Get the name of the single file in the zip archive
             file_names = zip_file.namelist()
             if len(file_names) != 1:
-                print("The zip file with the hash export should contain exactly one file: " + hashes_file_path)
+                print("The zip file with the hash export should contain exactly one file: " + hashes_file_path, file=sys.stderr)
                 exit(-1)
 
             inner_file_name = file_names[0]
@@ -76,7 +76,7 @@ def get_hash_lines(hashes_file_path: str) -> list[str]:
 def get_user_info_by_email(users_file_path: str) -> dict[str, dict[str, str]]:
     user_lines = get_user_lines(users_file_path)
     if not verify_valid_ndjson_lines(user_lines):
-        print('The users export file contains invalid json (ndjson) content: ' + users_file_path)
+        print('The users export file contains invalid json (ndjson) content: ' + users_file_path, file=sys.stderr)
         exit(-1)
 
     user_info_by_email = {}
@@ -91,7 +91,7 @@ def get_user_info_by_email(users_file_path: str) -> dict[str, dict[str, str]]:
 def get_password_hashes_by_email(hashes_file_path: str) -> dict[str, dict[str, str]]:
     hash_lines = get_hash_lines(hashes_file_path)
     if not verify_valid_ndjson_lines(hash_lines):
-        print('The password hash export file contains invalid json (ndjson) content: ' + hashes_file_path)
+        print('The password hash export file contains invalid json (ndjson) content: ' + hashes_file_path, file=sys.stderr)
         exit(-1)
 
     hash_info_by_email = {}
@@ -112,17 +112,16 @@ def get_auth0_db_name(password_hashes_by_email: dict[str, dict[str, str]]) -> st
 def create_auth0_import(users_file_path: str, hashes_file_path: str):
     user_info_by_email = get_user_info_by_email(users_file_path)
     if not user_info_by_email:
-        print('No users found in the file: ' + users_file_path)
+        print('No users found in the file: ' + users_file_path, file=sys.stderr)
         exit(0)
     password_hashes_by_email = get_password_hashes_by_email(hashes_file_path)
     if not user_info_by_email:
-        print('No password hashes found in the file: ' + hashes_file_path)
+        print('No password hashes found in the file: ' + hashes_file_path, file=sys.stderr)
         exit(0)
 
     # Each user that has a matching "Connection" value should have a hash in the hashes file.
     # Keep track of this for information purposes.
     database_name = get_auth0_db_name(password_hashes_by_email)
-    print(database_name)
 
     users_with_missing_passwords: list[str] = []
 
@@ -159,7 +158,7 @@ def create_auth0_import(users_file_path: str, hashes_file_path: str):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python auth0_import_export.py <users_file_path> <hash_export_file_path>")
+        print("Usage: python auth0_import_export.py <users_file_path> <hash_export_file_path>", file=sys.stderr)
         sys.exit(1)
 
     create_auth0_import(users_file_path=sys.argv[1], hashes_file_path=sys.argv[2])
