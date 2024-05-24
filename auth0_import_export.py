@@ -156,7 +156,8 @@ def create_auth0_import(users_file_path: str, hashes_file_path: str):
             # This user is authenticated using a non-local store. No password hash expected
             # Do not include them in the output JSON.
             # This tool does not handle social connections or enterprise connections.
-            output.append(user_info)
+            # output.append(user_info)
+            continue
 
     json_output = json.dumps(output, indent=2)
     print(json_output)
