@@ -129,6 +129,15 @@ def create_auth0_import(users_file_path: str, hashes_file_path: str):
     for email, user_info in user_info_by_email.items():
         # The output file needs a lower-cased "email"
         user_info['email'] = user_info.pop('Email')
+        user_info['email_verified'] = user_info.pop('Email Verified')
+        given_name = user_info.pop('Given Name', None)
+        if given_name:
+            user_info['given_name'] = given_name
+        family_name = user_info.pop('Family Name', None)
+        if family_name:
+            user_info['family_name'] = family_name
+        user_info['name'] = user_info.pop('Name')
+        user_info['connection'] = user_info.get('Connection')
 
         if user_info['Connection'] == database_name:
             # This user is stored in the local auth0 DB, and we need to add the password hash
@@ -141,10 +150,12 @@ def create_auth0_import(users_file_path: str, hashes_file_path: str):
                 output.append(user_info)
                 continue
 
-            user_info['passwordHash'] = password_hash_info['passwordHash']
+            user_info['password_hash'] = password_hash_info['passwordHash']
             output.append(user_info)
         else:
             # This user is authenticated using a non-local store. No password hash expected
+            # Do not include them in the output JSON.
+            # This tool does not handle social connections or enterprise connections.
             output.append(user_info)
 
     json_output = json.dumps(output, indent=2)
