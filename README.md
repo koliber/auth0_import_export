@@ -7,8 +7,8 @@ User this utility to migrate your Auth0 user database from one Auth0 tenant to a
 # How to use this tool?
 
 ## Prerequisites
-1You know how to use the command line
-2You have Python 3 installed
+1. You know how to use the command line
+2. You have Python 3 installed
 3. You downloaded the user export from Auth0 using the [import/export extension](https://auth0.com/docs/customize/extensions/user-import-export-extension).
 4. You received an Auth0 password hash export after requesting one from them using their support ticketing system.
 
