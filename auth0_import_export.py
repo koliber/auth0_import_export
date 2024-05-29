@@ -139,6 +139,12 @@ def create_auth0_import(users_file_path: str, hashes_file_path: str):
         user_info['name'] = user_info.pop('Name')
         user_info['connection'] = user_info.get('Connection')
 
+        # the ID field needs special processing
+        user_id = user_info.pop('Id')
+        if user_id.startswith('auth0|'):
+            user_id = user_id[6:]
+        user_info['id'] = user_id
+
         if user_info['Connection'] == database_name:
             # This user is stored in the local auth0 DB, and we need to add the password hash
             try:

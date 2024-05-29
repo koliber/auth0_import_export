@@ -31,9 +31,13 @@ they provide a convenient import/export extension.
 _Auth0 is silly._
 
 If you export the user database from one tenants and try to import it into another tenant, it fails.
+
 There are a few reasons:
+
 - the export is in ndjson format, while the import expects regular json
 - the export has emails in fields named "Email" while the import expects "email"
+- a bunch of other fields have different names in the import and export files
+- the ID needs special processing in order to import correctly
 
 _Auth0 is confusing._
 
